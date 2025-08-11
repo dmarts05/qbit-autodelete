@@ -88,7 +88,7 @@ func (m *QbitManager) getTorrents() ([]Torrent, error) {
 func (m *QbitManager) deleteTorrent(hash, name string) {
 	data := url.Values{}
 	data.Set("hashes", hash)
-	data.Set("deleteFiles", "true")
+	data.Set("deleteFiles", fmt.Sprintf("%t", m.cfg.DeleteFiles))
 
 	req, _ := http.NewRequest("POST", m.cfg.QbittorrentUrl+"/api/v2/torrents/delete", strings.NewReader(data.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")

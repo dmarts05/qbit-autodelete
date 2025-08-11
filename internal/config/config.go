@@ -12,6 +12,7 @@ type Config struct {
 	QbittorrentUrl      string
 	QbittorrentUsername string
 	QbittorrentPassword string
+	DeleteFiles         bool
 	DeleteAfterMinutes  int
 	PollIntervalSeconds int
 }
@@ -23,6 +24,16 @@ func New() (Config, error) {
 		QbittorrentUsername: os.Getenv("QBITTORRENT_USERNAME"),
 		QbittorrentPassword: os.Getenv("QBITTORRENT_PASSWORD"),
 	}
+
+	deleteFilesStr := os.Getenv("DELETE_FILES")
+	if deleteFilesStr == "" {
+		return Config{}, fmt.Errorf("missing required environment variable: DELETE_FILES")
+	}
+	deleteFiles, err := strconv.ParseBool(deleteFilesStr)
+	if err != nil {
+		return Config{}, fmt.Errorf("invalid DELETE_FILES value: %w", err)
+	}
+	cfg.DeleteFiles = deleteFiles
 
 	deleteAfterStr := os.Getenv("DELETE_AFTER_MINUTES")
 	if deleteAfterStr == "" {
