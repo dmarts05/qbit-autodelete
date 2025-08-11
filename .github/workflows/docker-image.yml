@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on:
+    workflow_run:
+        workflows: ["Go CI"]
+        types:
+            - completed
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Build the Docker image
+              run: docker build . --file Dockerfile --tag dmarts05/qbit-autodelete:latest
+
+            - name: Publish the Docker image
+              run: |
+                  docker login -u dmarts05 -p ${{ secrets.DOCKER_HUB_TOKEN }}
+                  docker push dmarts05/qbit-autodelete:latest
